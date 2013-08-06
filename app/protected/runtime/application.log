@@ -81,3 +81,53 @@ Stack trace:
 	`created_at` DATETIME NOT NULL DEFAULT 0,
 	`modified_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_unicode_ci.
+2013/08/06 12:26:19 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[3D000]: Invalid catalog name: 1046 No database selected. The SQL statement executed was: SHOW FULL COLUMNS FROM `migration`.
+2013/08/06 12:26:19 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[3D000]: Invalid catalog name: 1046 No database selected. The SQL statement executed was: CREATE TABLE `migration` (
+	`version` varchar(255) NOT NULL PRIMARY KEY,
+	`apply_time` int(11)
+).
+2013/08/06 12:26:19 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[3D000]: Invalid catalog name: 1046 No database selected. The SQL statement executed was: CREATE TABLE `migration` (
+	`version` varchar(255) NOT NULL PRIMARY KEY,
+	`apply_time` int(11)
+)' in /Users/Jeff/Sites/monitorapp/framework/db/CDbCommand.php:357
+Stack trace:
+#0 /Users/Jeff/Sites/monitorapp/framework/db/CDbCommand.php(1321): CDbCommand->execute()
+#1 /Users/Jeff/Sites/monitorapp/framework/cli/commands/MigrateCommand.php(475): CDbCommand->createTable('migration', Array)
+#2 /Users/Jeff/Sites/monitorapp/framework/cli/commands/MigrateCommand.php(458): MigrateCommand->createMigrationHistoryTable()
+#3 /Users/Jeff/Sites/monitorapp/framework/cli/commands/MigrateCommand.php(486): MigrateCommand->getMigrationHistory(-1)
+#4 /Users/Jeff/Sites/monitorapp/framework/cli/commands/MigrateCommand.php(88): MigrateCommand->getNewMigrations()
+#5 [internal function]: MigrateCommand->actionUp(Array)
+#6 /Users/Jeff/Sites/monitorapp/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#7 /Users/Jeff/Sites/monitorapp/framework/console/CConsoleCommandRunner.php(67): CConsoleCommand->run(Array)
+#8 /Users/Jeff/Sites/monitorapp/framework/console/CConsoleApplication.php(91): CConsoleCommandRunner->run(Array)
+#9 /Users/Jeff/Sites/monitorapp/framework/base/CApplication.php(169): CConsoleApplication->processRequest()
+#10 /Users/Jeff/Sites/monitorapp/framework/yiic.php(33): CApplication->run()
+#11 /Users/Jeff/Sites/monitorapp/app/protected/yiic.php(7): require_once('/Users/Jeff/Sit...')
+#12 /Users/Jeff/Sites/monitorapp/app/protected/yiic(4): require_once('/Users/Jeff/Sit...')
+#13 {main}
+---
+2013/08/06 12:26:37 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[3D000]: Invalid catalog name: 1046 No database selected. The SQL statement executed was: SHOW FULL COLUMNS FROM `migration`.
+2013/08/06 12:26:37 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[3D000]: Invalid catalog name: 1046 No database selected. The SQL statement executed was: CREATE TABLE `migration` (
+	`version` varchar(255) NOT NULL PRIMARY KEY,
+	`apply_time` int(11)
+).
+2013/08/06 12:26:37 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand failed to execute the SQL statement: SQLSTATE[3D000]: Invalid catalog name: 1046 No database selected. The SQL statement executed was: CREATE TABLE `migration` (
+	`version` varchar(255) NOT NULL PRIMARY KEY,
+	`apply_time` int(11)
+)' in /Users/Jeff/Sites/monitorapp/framework/db/CDbCommand.php:357
+Stack trace:
+#0 /Users/Jeff/Sites/monitorapp/framework/db/CDbCommand.php(1321): CDbCommand->execute()
+#1 /Users/Jeff/Sites/monitorapp/framework/cli/commands/MigrateCommand.php(475): CDbCommand->createTable('migration', Array)
+#2 /Users/Jeff/Sites/monitorapp/framework/cli/commands/MigrateCommand.php(458): MigrateCommand->createMigrationHistoryTable()
+#3 /Users/Jeff/Sites/monitorapp/framework/cli/commands/MigrateCommand.php(132): MigrateCommand->getMigrationHistory(1)
+#4 [internal function]: MigrateCommand->actionDown(Array)
+#5 /Users/Jeff/Sites/monitorapp/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs(Object(MigrateCommand), Array)
+#6 /Users/Jeff/Sites/monitorapp/framework/console/CConsoleCommandRunner.php(67): CConsoleCommand->run(Array)
+#7 /Users/Jeff/Sites/monitorapp/framework/console/CConsoleApplication.php(91): CConsoleCommandRunner->run(Array)
+#8 /Users/Jeff/Sites/monitorapp/framework/base/CApplication.php(169): CConsoleApplication->processRequest()
+#9 /Users/Jeff/Sites/monitorapp/framework/yiic.php(33): CApplication->run()
+#10 /Users/Jeff/Sites/monitorapp/app/protected/yiic.php(7): require_once('/Users/Jeff/Sit...')
+#11 /Users/Jeff/Sites/monitorapp/app/protected/yiic(4): require_once('/Users/Jeff/Sit...')
+#12 {main}
+---
+2013/08/06 12:28:17 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'monitorapp.ma_migration' doesn't exist. The SQL statement executed was: SHOW FULL COLUMNS FROM `ma_migration`.

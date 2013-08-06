@@ -15,8 +15,8 @@ Yii::import('application.modules.user.UserModule');
     </div>
   <div class="span5">
     <div class="home-header">
-    	  <h1>Welcome to Listapp</h1>
-<p>An open source utility for managing your Mailgun.com mailing lists. <a href="http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-api">Learn more</a>.</p>
+    	  <h1>Welcome to MonitorApp</h1>
+<p>An open source utility for smaller server monitoring tasks via mobile SMS notifications. <a href="http://jeffreifman.com/2013/08/07/how-to-build-your-own-web-site-monitoring-and-notifications-app-with-mobile-support">Learn more</a>.</p>
     	</div>
     </div>  
   <div class="home-content span3">

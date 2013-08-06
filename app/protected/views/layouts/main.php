@@ -37,9 +37,8 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/main.js');
 			'class' => 'bootstrap.widgets.TbMenu',
 			'htmlOptions'=>array('class'=>'pull-left'),
 			'items' => array(
-				array('label'=>'Lists', 'url'=>array('/mglist/index'), ),
-//				array('label'=>'Messages', 'url'=>array('/message/index'), ),
-				array('label'=>'Synchronize', 'url'=>array('/mglist/syncAll'), ),
+				array('label'=>'Content', 'url'=>array('/content/index'), ),
+				array('label'=>'Devices', 'url'=>array('/device/index'), ),
 			)
   	  ) : array() ),
 
@@ -48,9 +47,8 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/main.js');
 			'htmlOptions'=>array('class'=>'pull-right'),
 			'items' => array(
         array('label'=>'About', 'items'=> array(
-          array('url'=>'http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-api', 'label'=>'Read the tutorial'),
-        array('url'=>'https://github.com/newscloud/listapp', 'label'=>'Get the code'),
-        array('url'=>'http://documentation.mailgun.com/api-mailinglists.html', 'label'=>'Mailgun documentation'),
+          array('url'=>'http://jeffreifman.com/2013/08/07/how-to-build-your-own-web-site-monitoring-and-notifications-app-with-mobile-support', 'label'=>'Read the tutorial'),
+        array('url'=>'https://github.com/newscloud/monitorapp', 'label'=>'Get the code'),
         array('url'=>'http://jeffreifman.com/consulting', 'label'=>'About NewsCloud'),
 				)),
 				array('label'=>'Account', 'items'=> array(
@@ -73,8 +71,8 @@ array('url'=>Yii::app()->getModule('user')->logoutUrl, 'label'=>'Sign out', 'vis
 	<div class="clear"></div>
 
 	<div id="footer">
-    <div class="left">Provided by <a href="http://mailgun.com">Mailgun</a></div>
-  <div class="right">Written by <?php echo date('Y'); ?> <a href="http://jeffreifman.com/consulting">NewsCloud Consulting</a></div>
+  <div class="right"><a href="https://twitter.com/intent/user?screen_name=reifman">Follow @reifman</a></div>
+  <div class="left"><ul class="inline"><li>&copy; <?php echo date('Y'); ?> <a href="http://jeffreifman.com/consulting">NewsCloud Consulting</a></li></ul></div>
 	</div><!-- footer -->
 
 </div><!-- page -->

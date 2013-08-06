@@ -32,16 +32,16 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/main.js');
   
 	<?php echo $content; 	?>
 
-  <div class="footer" >
-    <ul class="inline">
-      <li> <a href="http://blog.mailgun.com/post/turnkey-mailing-list-applet-using-the-mailgun-api">About</a><span class="dot divider"> &middot;</span></li>
-       <li ><a href="https://github.com/newscloud/listapp">Code</a><span class="dot divider"> &middot;</span></li>
-      <li ><a href="https://github.com/newscloud/listapp/issues">Help</a><span class="dot divider"> &middot;</span></li>
-<!--       <li ><a href="/privacy">Privacy</a><span class="dot divider"> &middot;</span></li> -->
-<li><a href="http://mailgun.com">Mailgun</a><span class="dot divider"> &middot;</span></li>
-      <li><a href="http://jeffreifman.com/consulting">NewsCloud Consulting</a></li>
-    </ul>
-  </div>
+    <div class="footer" >
+      <ul class="inline">
+        <li> <a href="http://jeffreifman.com/2013/08/07/how-to-build-your-own-web-site-monitoring-and-notifications-app-with-mobile-support">About</a><span class="dot divider"> &middot;</span></li>
+         <li ><a href="https://github.com/newscloud/monitorapp">Code</a><span class="dot divider"> &middot;</span></li>
+        <li ><a href="https://github.com/newscloud/monitorapp/issues">Help</a><span class="dot divider"> &middot;</span></li>
+  <!--       <li ><a href="/privacy">Privacy</a><span class="dot divider"> &middot;</span></li>       <li><a href="http://mailgun.com">Mailgun</a><span class="dot divider"> &middot;</span></li>
+  -->
+        <li><a href="http://jeffreifman.com/consulting">NewsCloud Consulting</a></li>
+      </ul>
+    </div>
 </div><!-- page -->
 </body>
 </html>

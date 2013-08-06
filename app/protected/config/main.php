@@ -10,13 +10,13 @@
 $options = array(
   
 	'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-	'name'=>'ListApp',
+	'name'=>'MonitorApp',
 
 	// preloading 'log' component
 	'preload'=>array(
 	  'log',
 	  'bootstrap',
-	  'mailgun'
+	  'pushover',
 	  ),
 
 	// autoloading model and component classes
