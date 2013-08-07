@@ -47,7 +47,7 @@ class ContentController extends Controller
   public function actionTest($id) {
     $result=Content::model()->test($id);
     Yii::app()->user->setFlash('info',$result->msg);
-    $this->redirect('/content/admin');
+    $this->redirect('/content/index');
   }      
 
 	/**
