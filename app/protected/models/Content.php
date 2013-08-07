@@ -10,16 +10,16 @@
  * @property string $contents
  * @property integer $type
  * @property integer $device_id
+ * @property integer $sound
  */
 class Content extends CActiveRecord
 {
   
   const TYPE_CONTAINS=10;
+  const TYPE_NOT_CONTAINS=15;
    const TYPE_TIMESTAMP=20;
    const TYPE_DISKSPACE=30;
    const TYPE_CHECKSERVICE=40;
-
-
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -50,6 +50,8 @@ class Content extends CActiveRecord
 			array('name, url', 'required'),
 			array('type, device_id', 'numerical', 'integerOnly'=>true),
 			array('name, url', 'length', 'max'=>255),
+			array('sound', 'length', 'max'=>32),
+			array('url', 'url'),
 			array('contents', 'length', 'max'=>2500),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -75,11 +77,12 @@ class Content extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'url' => 'Url',
-			'contents' => 'Contents',
+			'name' => 'Friendly Name',
+			'url' => 'Url to check',
+			'contents' => 'Contents to compare (optional)',
 			'type' => 'Type',
 			'device_id' => 'Device',
+			'sound' => 'Sound',
 		);
 	}
 
@@ -100,6 +103,7 @@ class Content extends CActiveRecord
 		$criteria->compare('contents',$this->url,true);
 		$criteria->compare('type',$this->type);
 		$criteria->compare('device_id',$this->device_id);
+		$criteria->compare('sound',$this->sound);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -107,11 +111,12 @@ class Content extends CActiveRecord
 	}
 	
   // send notification to admin mobile device via pushover
-  public function notify($title='',$message='',$url='',$urlTitle='',$priority=1,$token='',$device='iphone',$debug=false) {
+  public function notify($title='',$message='',$url='',$urlTitle='',$priority=1,$token='',$device='iphone',$sound='default',$debug=false) {
     $po = new Pushover();
     $po->setToken(Yii::app()->params['pushover']['key']);
     $po->setUser($token);
     $po->setDevice($device);
+    $po->setSound($sound);
     $po->setTitle($title);
     $po->setMessage($message);
     if ($url<>'') {
@@ -130,11 +135,71 @@ class Content extends CActiveRecord
       echo '</pre>';      
     }
   }
+  
+  public function test($id) {
+    $result = new stdClass;
+    $result->status = true;
+    $result->msg ='OK';
+     $item = Content::model()->findByPk($id);
+     $result->title = $item['name'];
+     $result->urlTitle = 'Check this page...';
+     $result->url = $item['url'];
+     switch ($item['type']) {
+       case self::TYPE_NOT_CONTAINS:
+       $data = $this->getRemotePage($item['url']);
+       if (stristr($data,$item['contents'])!==false) {
+         $result->msg ='Fail';
+         $result->status =false;
+       }          
+       break;
+       case self::TYPE_CONTAINS:
+        $data = $this->getRemotePage($item['url']);
+        if (!stristr($data,$item['contents'])) {
+          $result->msg ='Fail';
+          $result->status =false;
+        }          
+       break;
+       case self::TYPE_TIMESTAMP:
+        $data = $this->getRemotePage($item['url']);
+        if (time()-intval($data)>660) {
+          $result->msg ='Fail';
+          $result->status =false;          
+        }
+       break;
+       case self::TYPE_DISKSPACE:
+       $data = $this->getRemotePage($item['url']);
+       if (intval($data)<1000000) { // < 1 MB returns failure
+         $result->msg ='Fail';
+         $result->status =false;          
+       }
+       break;
+       case self::TYPE_CHECKSERVICE:
+       $data = $this->getRemotePage($item['url']);
+       if (trim(strtolower($data))<>'ok') { 
+         $result->msg ='Fail';
+         $result->status =false;          
+       }
+       break;      
+     }
+     return $result;
+  }
 
+  function getRemotePage($url) {
+  	$ch = curl_init();
+  	$timeout = 5;
+  	curl_setopt($ch, CURLOPT_URL, $url);
+  	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+  	$data = curl_exec($ch);
+  	curl_close($ch);
+  	return $data;
+  }
+  
   public function getTypeOptions()
    {
      return array(
        self::TYPE_CONTAINS=>'Check that page contains this content',
+       self::TYPE_NOT_CONTAINS=>'Check that page does NOT contains this content',
        self::TYPE_TIMESTAMP=>'Verify recent timestamp e.g. cron',
        self::TYPE_DISKSPACE=>'Verify free diskspace',
        self::TYPE_CHECKSERVICE=>'Verify service is running',
@@ -146,5 +211,86 @@ class Content extends CActiveRecord
        $deviceArray = CHtml::listData(Device::model()->findAll(), 'id', 'name');
        return $deviceArray;
     }	
-	
+
+	public function getSoundOptions() {
+	  return array(
+    'pushover'=>'pushover',
+    'bike'=>'bike',
+    'bugle'=>'bugle',
+    'cashregister'=>'cashregister',
+    'classical'=>'classical',
+    'cosmic'=>'cosmic',
+    'falling'=>'falling',
+    'gamelan'=>'gamelan',
+    'incoming'=>'incoming',
+    'intermission'=>'intermission',
+    'magic'=>'magic',
+    'mechanical'=>'mechanical',
+    'pianobar'=>'pianobar',
+    'siren'=>'siren',
+    'spacealarm'=>'spacealarm',
+    'tugboat'=>'tugboat',
+    'alien'=>'alien',
+    'climb'=>'climb',
+    'persistent'=>'persistent',
+    'echo'=>'echo',
+    'updown'=>'updown',
+    'none'=>'none'
+    );
+	}
+
+    public function testAll() {
+      $str = '';
+  	  $errors = false;	  
+  	  // monitor all content items
+      $checks = Content::model()->findAll();
+      foreach ($checks as $item) {
+        // perform the test
+        $str.='<p>Checking '.$item['name'].'...';
+        $result = Content::model()->test($item['id']);
+        // if there is an error send notification to the device
+        if (!$result->status) {
+          $str.='failed<br />'; 
+          $str.='Please check <a href="'.$item['url'].'">'.$item['url'].'</a><br />';
+           if ($item['device_id']==0) {
+             //  send to all devices
+             $devices = Device::model()->findAll();
+             foreach ($devices as $device) {
+               Content::model()->notify($item['name'].' Failed','Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']);                            
+               $str.='Notifying '.$device['name'].'<br />';
+             }
+           } else {
+             $device = Device::model()->findByPk($item['device_id']);
+             Content::model()->notify($item['name'].' Failed','Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']) ;               
+             $str.='Notifying '.$device['name'].'<br />';
+           }
+           $str.='</p>';
+          $errors = true;
+        } else {
+          $str.='success</p>';
+        }      
+      } 
+      // check for sending heartbeart
+      if (!$errors) {
+        // only notify me with heartbeat every heartbeat_interval hours
+        // note: cron must run every ten minutes or change 10 below to fit your interval
+        // the point of date('i')<10 is to send heartbeat only in first part of any hour
+        if ((date('G')% Yii::app()->params['heartbeat_interval']) == 0 and date('i')<10) {
+          $this->sendHeartbeat();
+          $str.='<p>Heartbeat sent.</p>';
+        } else {
+          $str.='<p>Skipped heartbeat for now.</p>';        
+        }
+  	  }
+  	  return $str;    
+    }
+
+    public function sendHeartbeat() {
+      $devices = Device::model()->findAll();
+      // sends heartbeat to all devices
+      foreach ($devices as $device) {
+        Content::model()->notify('Heartbeat','Testing testing testing...','http://jeffreifman.com/','Learn more about monitor app',1,$device['pushover_token'],$device['pushover_device'],Yii::app()->params['heartbeat_sound']) ;
+          // add break here to skip secondary devices
+      }	      
+    }	
 }

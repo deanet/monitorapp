@@ -72,6 +72,8 @@ class Pushover
 	 * @var string
 	 */
 	private $_priority = 0;
+
+	private $_sound = 'default';
 	
 	/**
 	 * Include a Supplementary URL (up to 200 characters)
@@ -242,6 +244,15 @@ class Pushover
         return $this->_priority;
     }
 
+    public function setSound ($sound='default') {
+        $this->_sound = $sound;
+    }
+    
+    public function getSound () {
+        return $this->_sound;
+    }
+
+
 	/**
 	 * Set url
 	 * 
@@ -327,6 +338,7 @@ class Pushover
 			  	'message' => $this->getMessage(),
 			  	'device' => $this->getDevice(),
 			  	'priority' => $this->getPriority(),
+			  	'sound' => $this->getSound(),
 			  	'timestamp' => $this->getTimestamp(),
 			  	'url' => $this->getUrl(),
 			  	'url_title' => $this->getUrlTitle()

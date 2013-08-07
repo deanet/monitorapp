@@ -31,7 +31,7 @@ class ContentController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+				'actions'=>array('create','update','test'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -43,6 +43,12 @@ class ContentController extends Controller
 			),
 		);
 	}
+
+  public function actionTest($id) {
+    $result=Content::model()->test($id);
+    Yii::app()->user->setFlash('info',$result->msg);
+    $this->redirect('/content/admin');
+  }      
 
 	/**
 	 * Displays a particular model.
@@ -174,4 +180,35 @@ class ContentController extends Controller
 			Yii::app()->end();
 		}
 	}
+
+  protected function gridTypeColumn($data,$row)
+       {
+          switch ($data['type']) {
+            case 10:
+              $str = 'Contains';
+            break;
+            case 15:
+              $str = 'Does NOT contain';
+            break;
+            case 20:
+            $str = 'Timestamp';
+            break;
+            case 30:
+            $str = 'Diskspace';
+            break;
+            case 40:
+            $str = 'Service';
+            break;            
+          }
+          return $str;
+      }
+
+  protected function gridDeviceColumn($data,$row)
+       {
+          if ($data['device_id']==0)
+            return 'All devices';
+          $item = Device::model()->findByPk($data['device_id']);
+            // ... generate the output for the column
+           return $item['name'];    
+      }
 }

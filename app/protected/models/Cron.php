@@ -1,5 +1,7 @@
 <?php
 
-class Cron extends CFormModel
+class Cron extends CModel
 {
+  
+
 }

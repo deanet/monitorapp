@@ -47,6 +47,11 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/main.js');
 			'class' => 'bootstrap.widgets.TbMenu',
 			'htmlOptions'=>array('class'=>'pull-right'),
 			'items' => array(
+        array('label'=>'Pushover', 'items'=> array(          array('url'=>'http://click.linksynergy.com/fs-bin/stat?id=03*eottKFZU&offerid=146261&type=3&subid=0&tmpid=1826&RD_PARM1=https%253A%252F%252Fitunes.apple.com%252Fus%252Fapp%252Fpushover-notifications%252Fid506088175%253Fmt%253D8%2526uo%253D4%2526partnerId%253D30', 'label'=>'Buy iOS Pushover App'),
+        array('url'=>'https://play.google.com/store/apps/details?id=net.superblock.pushover&ts=1375911850', 'label'=>'Buy Android Pushover App'),
+          array('url'=>'https://pushover.net', 'label'=>'Visit Pushover.net'),
+				)),
+
         array('label'=>'About', 'items'=> array(
           array('url'=>'http://jeffreifman.com/2013/08/07/how-to-build-your-own-web-site-monitoring-and-notifications-app-with-mobile-support', 'label'=>'Read the tutorial'),
         array('url'=>'https://github.com/newscloud/monitorapp', 'label'=>'Get the code'),

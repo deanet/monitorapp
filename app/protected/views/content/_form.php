@@ -14,12 +14,16 @@
 
 	<?php
   echo $form->labelEx($model,'type'); 
-  echo $form->dropDownList($model,'type', $model->getTypeOptions()); 
+  echo $form->dropDownList($model,'type', $model->getTypeOptions(),array('class'=>'span6')); 
    echo $form->error($model,'type'); 
 	?>
 
   <?php 
-      echo '<p>'. $form->dropDownList($model,'device_id',$model->getDeviceOptions(),array('empty'=>'Select Device')).'</p>';
+      echo '<p>'. $form->dropDownList($model,'device_id',array_merge(array(0=>'Notify all devices'),$model->getDeviceOptions()),array('empty'=>'Select Device')).'</p>';
+  ?>
+
+  <?php 
+      echo '<p>'. $form->dropDownList($model,'sound',$model->getSoundOptions(),array('empty'=>'Select Sound for Notification')).'</p>';
   ?>
 
 	<div class="form-actions">

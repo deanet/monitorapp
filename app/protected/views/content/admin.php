@@ -6,6 +6,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'Add Content Check','url'=>array('create')),
+	array('label'=>'Send Heartbeat','url'=>array('cron/heartbeat')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -20,9 +21,21 @@ $('.search-form form').submit(function(){
 	return false;
 });
 ");
+
+if(Yii::app()->user->hasFlash('info')) {
+  $this->widget('bootstrap.widgets.TbAlert', array(
+      'block'=>true, // display a larger alert block?
+      'fade'=>true, // use transitions?
+      'closeText'=>'×', // close link text - if set to false, no close link is displayed
+      'alerts'=>array( // configurations per alert type
+  	    'info'=>array('block'=>true, 'fade'=>true, 'closeText'=>'×'), // success, info, warning, error or danger
+      ),
+  ));
+}
+
 ?>
 
-<h1>Manage Contents</h1>
+<h1>Manage Content &amp; Service Checks</h1>
 
 <p>
 You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
@@ -41,13 +54,32 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-		'id',
 		'name',
-		'url',
-		'type',
-		'device_id',
+    array(            
+                'name'=>'type',
+                //call the method 'gridDataColumn' from the controller
+                'value'=>array($this,'gridTypeColumn'), 
+            ),
+      'contents',
+    array(            
+                'name'=>'device_id',
+                //call the method 'gridDataColumn' from the controller
+                'value'=>array($this,'gridDeviceColumn'), 
+            ),
+      'sound',
 		array(
 			'class'=>'bootstrap.widgets.TbButtonColumn',
+			'header'=>'Options',
+      'template'=>'{test}{update}{delete}',
+          'buttons'=>array
+          (
+              'test' => array
+              (
+                'options'=>array('title'=>'test'),
+                'label'=>'<i class="icon-bell icon-large" style="margin:5px;"></i>',
+                'url'=>'Yii::app()->createUrl("content/test", array("id"=>$data->id))',
+              ),
+          ),			
 		),
 	),
 )); ?>
