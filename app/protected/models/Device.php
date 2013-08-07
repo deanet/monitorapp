@@ -6,11 +6,14 @@
  * The followings are the available columns in table '{{device}}':
  * @property integer $id
  * @property string $name
+ * @property string $email
  * @property string $pushover_token
  * @property string $pushover_device
  */
 class Device extends CActiveRecord
 {
+    const SEND_EMAIL_YES = 1;
+    const SEND_EMAIL_NO = 0;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -39,6 +42,8 @@ class Device extends CActiveRecord
 		return array(
 			array('name, pushover_token, pushover_device', 'required'),
 			array('name', 'length', 'max'=>128),
+			array('email', 'length', 'max'=>128),
+			array('email', 'email'),
 			array('pushover_token, pushover_device', 'length', 'max'=>32),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -65,6 +70,7 @@ class Device extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
+			'email' => 'Email Address',
 			'pushover_token' => 'Pushover Token',
 			'pushover_device' => 'Pushover Device',
 		);
@@ -83,6 +89,7 @@ class Device extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('name',$this->email,true);
 		$criteria->compare('pushover_token',$this->pushover_token,true);
 		$criteria->compare('pushover_device',$this->pushover_device,true);
 
@@ -90,4 +97,13 @@ class Device extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+  public function getSendOptions()
+   {
+     return array(
+       self::SEND_EMAIL_YES=>'Notify via email as well',
+       self::SEND_EMAIL_NO=>'Do not send email',
+        );
+    }			
+	
 }

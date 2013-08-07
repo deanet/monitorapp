@@ -157,10 +157,10 @@ $options = array(
 		'adminEmail'=>'admin@yourdomain.com',
 		'supportEmail'=>$config['support_email'],
 		'postsPerPage'=> 10,
-    'mailgun'=> array(
-      'api_key'=> $config['mailgun_api_key'],
-        'api_url' => $config['mailgun_api_url']
-    ),
+  	'heartbeat_interval'=> intval($config['heartbeat_interval']),
+    'pushover'=> array(
+      'key'=> $config['pushover_key'],
+    ),  	
 	),
 );
 // configure logging

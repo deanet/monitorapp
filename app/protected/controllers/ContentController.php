@@ -127,10 +127,7 @@ class ContentController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Content');
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
+	  $this->actionAdmin();
 	}
 
 	/**
@@ -138,6 +135,10 @@ class ContentController extends Controller
 	 */
 	public function actionAdmin()
 	{
+    if (Device::model()->count()==0) {
+      Yii::app()->user->setFlash('warning','You need add at least one Pushover device before adding content checks.');
+			$this->redirect(array('/device/index'));				
+    }
 		$model=new Content('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Content']))

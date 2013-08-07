@@ -10,10 +10,17 @@
 	<?php echo $form->textFieldRow($model,'name',array('class'=>'span5','maxlength'=>255)); ?>
 
 	<?php echo $form->textFieldRow($model,'url',array('class'=>'span5','maxlength'=>255)); ?>
+	<?php echo $form->textAreaRow($model,'contents',array('rows'=>3, 'cols'=>50, 'class'=>'span8')); ?>
 
-	<?php echo $form->textFieldRow($model,'type',array('class'=>'span5')); ?>
+	<?php
+  echo $form->labelEx($model,'type'); 
+  echo $form->dropDownList($model,'type', $model->getTypeOptions()); 
+   echo $form->error($model,'type'); 
+	?>
 
-	<?php echo $form->textFieldRow($model,'device_id',array('class'=>'span5')); ?>
+  <?php 
+      echo '<p>'. $form->dropDownList($model,'device_id',$model->getDeviceOptions(),array('empty'=>'Select Device')).'</p>';
+  ?>
 
 	<div class="form-actions">
 		<?php $this->widget('bootstrap.widgets.TbButton', array(

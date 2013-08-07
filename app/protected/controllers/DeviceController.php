@@ -31,7 +31,7 @@ class DeviceController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+				'actions'=>array('create','update','test'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -127,10 +127,7 @@ class DeviceController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Device');
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
+	  $this->actionAdmin();
 	}
 
 	/**
@@ -147,6 +144,14 @@ class DeviceController extends Controller
 			'model'=>$model,
 		));
 	}
+
+      
+public function actionTest($id) {
+  $device = Device::model()->findByPk($id);
+ Content::model()->notify('This is a test','Testing testing testing...','http://jeffreifman.com/','Learn more about monitor app',1,$device['pushover_token'],$device['pushover_device']) ;
+   Yii::app()->user->setFlash('info','Your notification has been sent. Check your device.');
+   $this->redirect('/device/index');
+}      
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.

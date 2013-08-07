@@ -19,6 +19,7 @@ class m130806_193317_create_content_table extends CDbMigration
              'id' => 'pk',
              'name'=> 'VARCHAR(255) NOT NULL',
              'url'=> 'VARCHAR(255) NOT NULL',
+             'contents'=> 'TEXT NOT NULL',
              'type'=> 'TINYINT DEFAULT 0',
              'device_id'=> 'INTEGER DEFAULT 0',
                ), $this->MySqlOptions);

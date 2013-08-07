@@ -7,11 +7,20 @@
  * @property integer $id
  * @property string $name
  * @property string $url
+ * @property string $contents
  * @property integer $type
  * @property integer $device_id
  */
 class Content extends CActiveRecord
 {
+  
+  const TYPE_CONTAINS=10;
+   const TYPE_TIMESTAMP=20;
+   const TYPE_DISKSPACE=30;
+   const TYPE_CHECKSERVICE=40;
+
+
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -41,6 +50,7 @@ class Content extends CActiveRecord
 			array('name, url', 'required'),
 			array('type, device_id', 'numerical', 'integerOnly'=>true),
 			array('name, url', 'length', 'max'=>255),
+			array('contents', 'length', 'max'=>2500),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name, url, type, device_id', 'safe', 'on'=>'search'),
@@ -67,6 +77,7 @@ class Content extends CActiveRecord
 			'id' => 'ID',
 			'name' => 'Name',
 			'url' => 'Url',
+			'contents' => 'Contents',
 			'type' => 'Type',
 			'device_id' => 'Device',
 		);
@@ -86,6 +97,7 @@ class Content extends CActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('url',$this->url,true);
+		$criteria->compare('contents',$this->url,true);
 		$criteria->compare('type',$this->type);
 		$criteria->compare('device_id',$this->device_id);
 
@@ -98,11 +110,8 @@ class Content extends CActiveRecord
   public function notify($title='',$message='',$url='',$urlTitle='',$priority=1,$token='',$device='iphone',$debug=false) {
     $po = new Pushover();
     $po->setToken(Yii::app()->params['pushover']['key']);
-    $po->setUser(getUserProfile(1)->getAttribute('pushover_token'));
-    $po->setDevice(getUserProfile(1)->getAttribute('pushover_device'));
-    // to do - base this on logged in user
-    // getUserProfile(Yii::app()->user->id)->getAttribute('pushover_token')
-    //getUserProfile(Yii::app()->user->id)->getAttribute('pushover_device')
+    $po->setUser($token);
+    $po->setDevice($device);
     $po->setTitle($title);
     $po->setMessage($message);
     if ($url<>'') {
@@ -121,5 +130,21 @@ class Content extends CActiveRecord
       echo '</pre>';      
     }
   }
+
+  public function getTypeOptions()
+   {
+     return array(
+       self::TYPE_CONTAINS=>'Check that page contains this content',
+       self::TYPE_TIMESTAMP=>'Verify recent timestamp e.g. cron',
+       self::TYPE_DISKSPACE=>'Verify free diskspace',
+       self::TYPE_CHECKSERVICE=>'Verify service is running',
+        );
+    }			
+
+     public function getDeviceOptions()
+     {
+       $deviceArray = CHtml::listData(Device::model()->findAll(), 'id', 'name');
+       return $deviceArray;
+    }	
 	
 }

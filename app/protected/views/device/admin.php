@@ -5,9 +5,32 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Device','url'=>array('index')),
-	array('label'=>'Create Device','url'=>array('create')),
+	array('label'=>'Add Device','url'=>array('create')),
 );
+
+ // display flash when user isn't a member anywhere
+if(Yii::app()->user->hasFlash('warning')) {
+  $this->widget('bootstrap.widgets.TbAlert', array(
+      'block'=>true, // display a larger alert block?
+      'fade'=>true, // use transitions?
+      'closeText'=>'×', // close link text - if set to false, no close link is displayed
+      'alerts'=>array( // configurations per alert type
+  	    'warning'=>array('block'=>true, 'fade'=>true, 'closeText'=>'×'), // success, info, warning, error or danger
+      ),
+  ));
+}
+
+  if(Yii::app()->user->hasFlash('info')) {
+    $this->widget('bootstrap.widgets.TbAlert', array(
+        'block'=>true, // display a larger alert block?
+        'fade'=>true, // use transitions?
+        'closeText'=>'×', // close link text - if set to false, no close link is displayed
+        'alerts'=>array( // configurations per alert type
+    	    'info'=>array('block'=>true, 'fade'=>true, 'closeText'=>'×'), // success, info, warning, error or danger
+        ),
+    ));
+  }
+  
 
 Yii::app()->clientScript->registerScript('search', "
 $('.search-button').click(function(){
@@ -48,6 +71,17 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'pushover_device',
 		array(
 			'class'=>'bootstrap.widgets.TbButtonColumn',
+			'header'=>'Options',
+      'template'=>'{test}{update}{delete}',
+          'buttons'=>array
+          (
+              'test' => array
+              (
+                'options'=>array('title'=>'test'),
+                'label'=>'<i class="icon-bell icon-large" style="margin:5px;"></i>',
+                'url'=>'Yii::app()->createUrl("device/test", array("id"=>$data->id))',
+              ),
+          ),			
 		),
 	),
 )); ?>

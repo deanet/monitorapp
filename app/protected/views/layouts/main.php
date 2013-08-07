@@ -39,6 +39,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/main.js');
 			'items' => array(
 				array('label'=>'Content', 'url'=>array('/content/index'), ),
 				array('label'=>'Devices', 'url'=>array('/device/index'), ),
+				array('label'=>'Check now!', 'url'=>array('/cron/index'), ),
 			)
   	  ) : array() ),
 

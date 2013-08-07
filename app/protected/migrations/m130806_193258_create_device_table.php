@@ -18,8 +18,10 @@ class m130806_193258_create_device_table extends CDbMigration
     $this->createTable($this->tableName, array(
                'id' => 'pk',
                'name'=> 'VARCHAR(128) NOT NULL',
+               'email'=> 'VARCHAR(255) NOT NULL',               
                'pushover_token'=> 'VARCHAR(32) NOT NULL',
                'pushover_device' => 'VARCHAR(32) NOT NULL',
+               'send_email'=> 'TINYINT(1) default 0',                              
                  ), $this->MySqlOptions);
                 $this->createIndex('device_id', $this->tableName , 'id', true);
    	}

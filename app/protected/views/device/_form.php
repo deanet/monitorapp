@@ -9,6 +9,14 @@
 
 	<?php echo $form->textFieldRow($model,'name',array('class'=>'span5','maxlength'=>128)); ?>
 
+	<?php echo $form->textFieldRow($model,'email',array('class'=>'span5','maxlength'=>128)); ?>
+
+	<?php
+  echo $form->labelEx($model,'send_email'); 
+  echo $form->dropDownList($model,'send_email', $model->getSendOptions()); 
+   echo $form->error($model,'send_email'); 
+	?>
+
 	<?php echo $form->textFieldRow($model,'pushover_token',array('class'=>'span5','maxlength'=>32)); ?>
 
 	<?php echo $form->textFieldRow($model,'pushover_device',array('class'=>'span5','maxlength'=>32)); ?>
