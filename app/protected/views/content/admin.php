@@ -77,7 +77,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
               (
                 'options'=>array('title'=>'test'),
                 'label'=>'<i class="icon-bell icon-large" style="margin:5px;"></i>',
-                'url'=>'Yii::app()->createUrl("content/test", array("id"=>$data->id))',
+                'url'=>'Yii::app()->createUrl("/content/test", array("id"=>$data->id))',
               ),
           ),			
 		),
