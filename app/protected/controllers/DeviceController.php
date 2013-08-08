@@ -93,6 +93,7 @@ class DeviceController extends Controller
 		if(isset($_POST['Device']))
 		{
 			$model->attributes=$_POST['Device'];
+			// to do - problem here with send_email not being attributed
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -148,7 +149,7 @@ class DeviceController extends Controller
       
 public function actionTest($id) {
   $device = Device::model()->findByPk($id);
- Content::model()->notify('This is a test','Testing testing testing...','http://jeffreifman.com/','Learn more about monitor app',1,$device['pushover_token'],$device['pushover_device']) ;
+ Content::model()->notify($device,'This is a test','Testing testing testing...','http://jeffreifman.com/','Learn more about monitor app',1) ;
    Yii::app()->user->setFlash('info','Your notification has been sent. Check your device.');
    $this->redirect('/device/index');
 }      

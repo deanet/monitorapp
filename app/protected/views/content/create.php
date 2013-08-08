@@ -9,6 +9,6 @@ $this->menu=array(
 );
 ?>
 
-<h1>Create Content</h1>
+<h1>Create a New Content or Service Check</h1>
 
 <?php echo $this->renderPartial('_form', array('model'=>$model)); ?>

@@ -13,7 +13,7 @@
 
 	<?php
   echo $form->labelEx($model,'send_email'); 
-  echo $form->dropDownList($model,'send_email', $model->getSendOptions()); 
+  echo $form->dropDownList($model,'send_email', $model->getSendEmailOptions(),array('empty'=>'- select delivery method -')); 
    echo $form->error($model,'send_email'); 
 	?>
 

@@ -16,7 +16,7 @@ Yii::import('application.modules.user.UserModule');
   <div class="span5">
     <div class="home-header">
     	  <h1>Welcome to MonitorApp</h1>
-<p>An open source utility for smaller server monitoring tasks via mobile SMS notifications. <a href="http://jeffreifman.com/2013/08/07/how-to-build-your-own-web-site-monitoring-and-notifications-app-with-mobile-support">Learn more</a>.</p>
+<p>An open source utility for smaller server monitoring tasks via mobile notifications. <a href="http://jeffreifman.com/2013/08/08/how-to-build-your-own-web-site-monitoring-app-with-notifications-for-ios-and-android">Learn more</a>.</p>
     	</div>
     </div>  
   <div class="home-content span3">

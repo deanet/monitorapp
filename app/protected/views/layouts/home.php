@@ -12,7 +12,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/main.js');
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="en" />
-  <link rel="icon" type="image/png" href="/images/favicon.png" />
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
 	<!-- blueprint CSS framework -->
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />
@@ -34,7 +34,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl.'/js/main.js');
 
     <div class="footer" >
       <ul class="inline">
-        <li> <a href="http://jeffreifman.com/2013/08/07/how-to-build-your-own-web-site-monitoring-and-notifications-app-with-mobile-support">About</a><span class="dot divider"> &middot;</span></li>
+        <li> <a href="http://jeffreifman.com/2013/08/08/how-to-build-your-own-web-site-monitoring-app-with-notifications-for-ios-and-android">About</a><span class="dot divider"> &middot;</span></li>
          <li ><a href="https://github.com/newscloud/monitorapp">Code</a><span class="dot divider"> &middot;</span></li>
         <li ><a href="https://github.com/newscloud/monitorapp/issues">Help</a><span class="dot divider"> &middot;</span></li>
   <!--       <li ><a href="/privacy">Privacy</a><span class="dot divider"> &middot;</span></li>       <li><a href="http://mailgun.com">Mailgun</a><span class="dot divider"> &middot;</span></li>

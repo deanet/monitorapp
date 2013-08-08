@@ -114,29 +114,42 @@ class Content extends CActiveRecord
 	}
 	
   // send notification to admin mobile device via pushover
-  public function notify($title='',$message='',$url='',$urlTitle='',$priority=1,$token='',$device='iphone',$sound='default',$debug=false) {
-    $po = new Pushover();
-    $po->setToken(Yii::app()->params['pushover']['key']);
-    $po->setUser($token);
-    $po->setDevice($device);
-    $po->setSound($sound);
-    $po->setTitle($title);
-    $po->setMessage($message);
-    if ($url<>'') {
-      $po->setUrl($url);      
-    }
-    if ($urlTitle<>'') {
-      $po->setUrlTitle($urlTitle);
-    }
-    $po->setPriority($priority);
-    $po->setTimestamp(time());
-    $po->setDebug(true);
-    $go = $po->send();
-    if ($debug) {
-      echo '<pre>';
-      print_r($go);
-      echo '</pre>';      
-    }
+  public function notify($device,$title='',$message='',$url='',$urlTitle='',$priority=1,$sound='default',$debug=false) {
+    // temporarily always send to device
+    //if ($device['send_email']==Device::SEND_DEVICE or $device['send_email']==Device::SEND_BOTH) {
+      $po = new Pushover();
+      $po->setToken(Yii::app()->params['pushover']['key']);
+      $po->setUser($device['pushover_token']);
+      $po->setDevice($device['pushover_device']);
+      $po->setSound($sound);
+      $po->setTitle($title);
+      $po->setMessage($message);
+      if ($url<>'') {
+        $po->setUrl($url);      
+      }
+      if ($urlTitle<>'') {
+        $po->setUrlTitle($urlTitle);
+      }
+      $po->setPriority($priority);
+      $po->setTimestamp(time());
+      $po->setDebug(true);
+      $go = $po->send();
+      if ($debug) {
+        echo '<pre>';
+        print_r($go);
+        echo '</pre>';      
+      }      
+    //}
+    if ($device['send_email']==Device::SEND_EMAIL or $device['send_email']==Device::SEND_BOTH) {
+      $msg = $message."\r\n\r\n";
+      $headers = 'From: '.Yii::app()->params['adminEmail'] . "\r\n";
+      if ($urlTitle<>'') {
+        $msg.=$urlTitle."\r\n\r\n";
+      }
+      if ($url<>'')
+        $msg.=$url."\r\n\r\n";
+      mail($device['email'], $title, $msg,$headers);
+    }    
   }
   
   public function test($id) {
@@ -239,12 +252,12 @@ class Content extends CActiveRecord
              //  send to all devices
              $devices = Device::model()->findAll();
              foreach ($devices as $device) {
-               Content::model()->notify($item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']);                            
+               Content::model()->notify($device,$item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$item['sound']);                            
                $str.='Notifying '.$device['name'].'<br />';
              }
            } else {
              $device = Device::model()->findByPk($item['device_id']);
-             Content::model()->notify($item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']) ;               
+             Content::model()->notify($device,$item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$item['sound']) ;               
              $str.='Notifying '.$device['name'].'<br />';
            }
            $str.='</p>';
@@ -278,11 +291,11 @@ class Content extends CActiveRecord
         //  send to all devices
         $devices = Device::model()->findAll();
         foreach ($devices as $device) {
-          Content::model()->notify($item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']);                            
+          Content::model()->notify($device,$item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$item['sound']);                            
         }
       } else {
         $device = Device::model()->findByPk($item['device_id']);
-        Content::model()->notify($item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']) ;               
+        Content::model()->notify($device,$item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$item['sound']) ;               
       }
     }
     
@@ -290,7 +303,7 @@ class Content extends CActiveRecord
       $devices = Device::model()->findAll();
       // sends heartbeat to all devices
       foreach ($devices as $device) {
-        Content::model()->notify('Heartbeat','Testing testing testing...','http://jeffreifman.com/','Learn more about monitor app',1,$device['pushover_token'],$device['pushover_device'],Yii::app()->params['heartbeat_sound']) ;
+        Content::model()->notify($device,'Heartbeat','Testing testing testing...','http://jeffreifman.com/','Learn more about monitor app',1,Yii::app()->params['heartbeat_sound']) ;
           // add break here to skip secondary devices
       }	      
     }	

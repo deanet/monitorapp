@@ -11,7 +11,7 @@ When the image is built, you can ssh in at the provided IP address:
 ssh root@xxx.xxx.xxx.xxx
 
 Set your DNS:
-yourdomain.com A record to xxx.xxx.xxx.xxx (IP address)
+monitorapp.yourdomain.com A record to xxx.xxx.xxx.xxx (IP address)
 
 Run the following steps to install LAMP:
 ---------------------------------------------------
@@ -21,7 +21,7 @@ Run the following steps to install LAMP:
 > sudo apt-get install php5-curl
 > sudo a2enmod rewrite
 
-Install the MapApp source code... 
+Install the MonitorApp source code... 
 ---------------------------------------------------
 You can use wget or clone it from github:
 
@@ -36,20 +36,20 @@ Test connection to Github
 
 Clone the repository:
 > cd /var/www
-> git clone git@github.com:newscloud/mapapp.git
+> git clone git@github.com:newscloud/monitorapp.git
 
 Configure your site in apache:
 ---------------------------------------------------
 > cd /etc/apache2/sites-available/
-> sudo nano mapapp
+> sudo nano monitorapp
 
 Modify and paste the following site definition:
 
 <VirtualHost *:80>
-   ServerName mapapp.yourdomain.com
-   DocumentRoot /var/www/mapapp/app 
+   ServerName monitorapp.yourdomain.com
+   DocumentRoot /var/www/monitorapp/app 
    DirectoryIndex index.php
-   <Directory /var/www/mapapp/app/>
+   <Directory /var/www/monitorapp/app/>
       AllowOverride All
       Order Deny,Allow
       Allow from all
@@ -57,7 +57,7 @@ Modify and paste the following site definition:
 </VirtualHost>
 
 Enable the site
-> sudo a2ensite mapapp
+> sudo a2ensite monitorapp
 
 Install MySQL Server:
 ---------------------------------------------------
@@ -71,52 +71,45 @@ sudo service apache2 restart
 Initialize the database:
 ---------------------------------
 > mysql -uroot -p
-> create database mapapp;
+> create database monitorapp;
 
 (replace newuser and password below with your own)
 > create user 'newuser'@'localhost' identified by 'password';
 > grant all privileges on * . * to 'newuser'@'localhost';
 > flush privileges;
 
-Download and import Zillow files
----------------------------------------------------
-> sudo apt-get install gdal-bin
-> sudo apt-get install unzip
-> mkdir ~/zillow
-copy /docs/wget-zillow.txt to ~/zillow/wget-zillow
-> bash wget-zillow
-copy /docs/import-zillow.txt to ~/zillow/import-zillow
-Edit the database name, credentials and neighborhood table in import-zillow script
-> bash import-zillow
-
 Build the configuration file for your application:
 ---------------------------------------------------
 > cd /var/www
 > mkdir secure
 > cd /var/www/secure
-> sudo nano mapapp-config.ini
-- copy & paste in your settings using /docs/mapapp-config.ini (in this directory) as an example
+> sudo nano config-monitorapp.ini
+- copy & paste in your settings using /docs/sample-config.ini (in this directory) as an example
 - use your mysql password and chosen domain
 
 Run the database migrations:
-> cd /var/www/mapapp
+> cd /var/www/monitorapp
 > ./app/protected/yiic migrate up
 Enter your admin user name, email and password
 - this is what you'll use to log in to the application
 
-Important:
-- We nede to reverse the Zillow neighborhood coordinates
-- Visit http://yourdomain.com/mapapp/app/neighborhoods/reverse
+Configure CRON to run the checks in the background
+---------------------------------------------------
+sudo crontab -e
+*/10 * * * * wget -O /dev/null http://monitorapp.yourdomain.com/cron/index
+
+Check that it's saved:
+sudo crontab -l 
 
 Visit your web page:
-http://mapapp.yourdomain.com
+http://monitorapp.yourdomain.com
 
 Login with your user name and password
 
 You should be ready to go...
 
 You can post issues on Github:
-https://github.com/newscloud/mapapp/issues
+https://github.com/newscloud/monitorapp/issues
 
 Or, as comments on my blog post:
-http://jeffreifman.com/2013/08/06/how-to-use-zillow-neighborhood-maps-and-html5-geolocation/
+http://jeffreifman.com/2013/08/08/how-to-build-your-own-web-site-monitoring-app-with-notifications-for-ios-and-android

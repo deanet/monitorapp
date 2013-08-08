@@ -7,14 +7,15 @@
  * @property integer $id
  * @property string $name
  * @property string $email
+ * @property integer $send_email
  * @property string $pushover_token
  * @property string $pushover_device
  */
 class Device extends CActiveRecord
 {
-    const SEND_BOTH = 2;
-    const SEND_EMAIL = 1;
     const SEND_DEVICE = 0;
+    const SEND_EMAIL = 1;
+    const SEND_BOTH = 2;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -72,6 +73,7 @@ class Device extends CActiveRecord
 			'id' => 'ID',
 			'name' => 'Name',
 			'email' => 'Email Address',
+			'send_email' => 'Send Notifications As',
 			'pushover_token' => 'Pushover Token',
 			'pushover_device' => 'Pushover Device',
 		);
@@ -90,7 +92,7 @@ class Device extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('name',$this->email,true);
+		$criteria->compare('email',$this->email,true);
 		$criteria->compare('pushover_token',$this->pushover_token,true);
 		$criteria->compare('pushover_device',$this->pushover_device,true);
 
@@ -99,12 +101,12 @@ class Device extends CActiveRecord
 		));
 	}
 	
-  public function getSendOptions()
+  public function getSendEmailOptions()
    {
      return array(
-       self::SEND_BOTH=>'Notify email and device',
-       self::SEND_EMAIL=>'Notify via email',
        self::SEND_DEVICE=>'Notify device via Pushover',
+       self::SEND_EMAIL=>'Notify via email',
+       self::SEND_BOTH=>'Notify email and device',
         );
     }			
 	
