@@ -5,7 +5,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'Create Content','url'=>array('create')),
-	array('label'=>'Manage Content','url'=>array('admin')),
+	array('label'=>'Manage Content','url'=>array('index')),
 );
 ?>
 

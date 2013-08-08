@@ -5,11 +5,10 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List Device','url'=>array('index')),
-	array('label'=>'Manage Device','url'=>array('admin')),
+	array('label'=>'Manage Devices','url'=>array('index')),
 );
 ?>
 
-<h1>Create Device</h1>
+<h1>Add a Device</h1>
 
 <?php echo $this->renderPartial('_form', array('model'=>$model)); ?>

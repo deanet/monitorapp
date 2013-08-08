@@ -5,7 +5,6 @@ class CronController extends Controller
   
   public function actionIndex()
 	{
-	  $result='asdasda';
 	  $result = Content::model()->testAll();
 		$this->render('index',array(
 			'result'=>$result,

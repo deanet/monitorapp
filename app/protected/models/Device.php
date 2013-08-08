@@ -12,8 +12,9 @@
  */
 class Device extends CActiveRecord
 {
-    const SEND_EMAIL_YES = 1;
-    const SEND_EMAIL_NO = 0;
+    const SEND_BOTH = 2;
+    const SEND_EMAIL = 1;
+    const SEND_DEVICE = 0;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -101,8 +102,9 @@ class Device extends CActiveRecord
   public function getSendOptions()
    {
      return array(
-       self::SEND_EMAIL_YES=>'Notify via email as well',
-       self::SEND_EMAIL_NO=>'Do not send email',
+       self::SEND_BOTH=>'Notify email and device',
+       self::SEND_EMAIL=>'Notify via email',
+       self::SEND_DEVICE=>'Notify device via Pushover',
         );
     }			
 	

@@ -6,7 +6,7 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Manage Content','url'=>array('admin')),
+	array('label'=>'Manage Content','url'=>array('index')),
 );
 ?>
 

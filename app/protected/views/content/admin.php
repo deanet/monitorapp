@@ -21,7 +21,6 @@ $('.search-form form').submit(function(){
 	return false;
 });
 ");
-
 if(Yii::app()->user->hasFlash('info')) {
   $this->widget('bootstrap.widgets.TbAlert', array(
       'block'=>true, // display a larger alert block?

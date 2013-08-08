@@ -27,15 +27,15 @@ class ContentController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array(''),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','test'),
+				'actions'=>array('create','update','test','index','view','admin','delete'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
+				'actions'=>array(''),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -46,7 +46,12 @@ class ContentController extends Controller
 
   public function actionTest($id) {
     $result=Content::model()->test($id);
-    Yii::app()->user->setFlash('info',$result->msg);
+    if (!$result->status) {
+      Content::model()->testNotify($result);
+      Yii::app()->user->setFlash('info',$result->msg.' Check your device(s) for notifications');
+    } else {
+      Yii::app()->user->setFlash('info',$result->msg);      
+    }
     $this->redirect('/content/index');
   }      
 
@@ -184,20 +189,23 @@ class ContentController extends Controller
   protected function gridTypeColumn($data,$row)
        {
           switch ($data['type']) {
-            case 10:
+            case Content::TYPE_CONTAINS:
               $str = 'Contains';
             break;
-            case 15:
+            case Content::TYPE_NOT_CONTAINS:
               $str = 'Does NOT contain';
             break;
-            case 20:
+            case Content::TYPE_TIMESTAMP:
             $str = 'Timestamp';
             break;
-            case 30:
+            case Content::TYPE_DISKSPACE:
             $str = 'Diskspace';
             break;
-            case 40:
+            case Content::TYPE_CHECKSERVICE:
             $str = 'Service';
+            break;            
+            case Content::TYPE_CHANGES:
+            $str = 'On Changes';
             break;            
           }
           return $str;

@@ -8,9 +8,11 @@
  * @property string $name
  * @property string $url
  * @property string $contents
+ * @property string $prior_content
  * @property integer $type
  * @property integer $device_id
  * @property integer $sound
+ 
  */
 class Content extends CActiveRecord
 {
@@ -20,6 +22,7 @@ class Content extends CActiveRecord
    const TYPE_TIMESTAMP=20;
    const TYPE_DISKSPACE=30;
    const TYPE_CHECKSERVICE=40;
+   const TYPE_CHANGES=50;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -139,6 +142,7 @@ class Content extends CActiveRecord
   public function test($id) {
     $result = new stdClass;
     $result->status = true;
+    $result->id = $id;
     $result->msg ='OK';
      $item = Content::model()->findByPk($id);
      $result->title = $item['name'];
@@ -180,9 +184,27 @@ class Content extends CActiveRecord
          $result->status =false;          
        }
        break;      
+       case self::TYPE_CHANGES:
+       $data = $this->getRemotePage($item['url']);
+       if ($data <> $item['prior_content']) {
+         $result->msg ='Changed';
+         $result->status =false;          
+         // save data as new prior_content
+         $save_result = $item->save();
+       }
+       break;      
      }
      return $result;
   }
+
+  protected function beforeSave()
+  {
+    if ($this->type == self::TYPE_CHANGES) {
+        $this->prior_content = $this->getRemotePage($this->url);
+      }
+    return parent::beforeSave();
+  }
+  
 
   function getRemotePage($url) {
   	$ch = curl_init();
@@ -195,49 +217,6 @@ class Content extends CActiveRecord
   	return $data;
   }
   
-  public function getTypeOptions()
-   {
-     return array(
-       self::TYPE_CONTAINS=>'Check that page contains this content',
-       self::TYPE_NOT_CONTAINS=>'Check that page does NOT contains this content',
-       self::TYPE_TIMESTAMP=>'Verify recent timestamp e.g. cron',
-       self::TYPE_DISKSPACE=>'Verify free diskspace',
-       self::TYPE_CHECKSERVICE=>'Verify service is running',
-        );
-    }			
-
-     public function getDeviceOptions()
-     {
-       $deviceArray = CHtml::listData(Device::model()->findAll(), 'id', 'name');
-       return $deviceArray;
-    }	
-
-	public function getSoundOptions() {
-	  return array(
-    'pushover'=>'pushover',
-    'bike'=>'bike',
-    'bugle'=>'bugle',
-    'cashregister'=>'cashregister',
-    'classical'=>'classical',
-    'cosmic'=>'cosmic',
-    'falling'=>'falling',
-    'gamelan'=>'gamelan',
-    'incoming'=>'incoming',
-    'intermission'=>'intermission',
-    'magic'=>'magic',
-    'mechanical'=>'mechanical',
-    'pianobar'=>'pianobar',
-    'siren'=>'siren',
-    'spacealarm'=>'spacealarm',
-    'tugboat'=>'tugboat',
-    'alien'=>'alien',
-    'climb'=>'climb',
-    'persistent'=>'persistent',
-    'echo'=>'echo',
-    'updown'=>'updown',
-    'none'=>'none'
-    );
-	}
 
     public function testAll() {
       $str = '';
@@ -250,18 +229,22 @@ class Content extends CActiveRecord
         $result = Content::model()->test($item['id']);
         // if there is an error send notification to the device
         if (!$result->status) {
-          $str.='failed<br />'; 
+          if ($item['type']==self::TYPE_CHANGES)
+            $temp_result_string = 'Page Changed';
+          else
+            $temp_result_string = 'Failed';
+          $str.=$temp_result_string.'<br />'; 
           $str.='Please check <a href="'.$item['url'].'">'.$item['url'].'</a><br />';
            if ($item['device_id']==0) {
              //  send to all devices
              $devices = Device::model()->findAll();
              foreach ($devices as $device) {
-               Content::model()->notify($item['name'].' Failed','Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']);                            
+               Content::model()->notify($item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']);                            
                $str.='Notifying '.$device['name'].'<br />';
              }
            } else {
              $device = Device::model()->findByPk($item['device_id']);
-             Content::model()->notify($item['name'].' Failed','Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']) ;               
+             Content::model()->notify($item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']) ;               
              $str.='Notifying '.$device['name'].'<br />';
            }
            $str.='</p>';
@@ -285,6 +268,24 @@ class Content extends CActiveRecord
   	  return $str;    
     }
 
+    public function testNotify($result) {
+      $item = Content::model()->findByPk($result->id);      
+      if ($item['type']==self::TYPE_CHANGES)
+        $temp_result_string = 'Page Changed';
+      else
+        $temp_result_string = 'Failed';
+      if ($item['device_id']==0) {
+        //  send to all devices
+        $devices = Device::model()->findAll();
+        foreach ($devices as $device) {
+          Content::model()->notify($item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']);                            
+        }
+      } else {
+        $device = Device::model()->findByPk($item['device_id']);
+        Content::model()->notify($item['name'].' '.$temp_result_string,'Please check into...',$item['url'],'this page',1,$device['pushover_token'],$device['pushover_device'],$item['sound']) ;               
+      }
+    }
+    
     public function sendHeartbeat() {
       $devices = Device::model()->findAll();
       // sends heartbeat to all devices
@@ -293,4 +294,50 @@ class Content extends CActiveRecord
           // add break here to skip secondary devices
       }	      
     }	
+
+    public function getTypeOptions()
+     {
+       return array(
+         self::TYPE_CONTAINS=>'Check that page contains this content',
+         self::TYPE_NOT_CONTAINS=>'Check that page does NOT contains this content',
+         self::TYPE_TIMESTAMP=>'Verify recent timestamp e.g. cron',
+         self::TYPE_DISKSPACE=>'Verify free diskspace',
+         self::TYPE_CHECKSERVICE=>'Verify service is running',
+         self::TYPE_CHANGES=>'Notify when page changes',
+          );
+      }			
+
+       public function getDeviceOptions()
+       {
+         $deviceArray = CHtml::listData(Device::model()->findAll(), 'id', 'name');
+         return $deviceArray;
+      }	
+
+  	public function getSoundOptions() {
+  	  return array(
+      'pushover'=>'pushover',
+      'bike'=>'bike',
+      'bugle'=>'bugle',
+      'cashregister'=>'cashregister',
+      'classical'=>'classical',
+      'cosmic'=>'cosmic',
+      'falling'=>'falling',
+      'gamelan'=>'gamelan',
+      'incoming'=>'incoming',
+      'intermission'=>'intermission',
+      'magic'=>'magic',
+      'mechanical'=>'mechanical',
+      'pianobar'=>'pianobar',
+      'siren'=>'siren',
+      'spacealarm'=>'spacealarm',
+      'tugboat'=>'tugboat',
+      'alien'=>'alien',
+      'climb'=>'climb',
+      'persistent'=>'persistent',
+      'echo'=>'echo',
+      'updown'=>'updown',
+      'none'=>'none'
+      );
+  	}
+
 }
