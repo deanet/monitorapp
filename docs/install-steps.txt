@@ -108,6 +108,11 @@ Login with your user name and password
 
 You should be ready to go...
 
+Alert: Some people are running into a problem with directory permissions seeing the bootstrap directory. CException Alias "bootstrap.widgets.TbNavbar" is invalid. Make sure it points to an existing directory or file.
+
+To fix this, make sure Apache can read all of your directories. e.g.
+> sudo chown www-data:www-data -R /var/www/monitorapp
+
 You can post issues on Github:
 https://github.com/newscloud/monitorapp/issues
 
